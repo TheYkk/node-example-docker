@@ -6,7 +6,9 @@ bu linkten ubuntu server iso dosyasini indirebilirsiniz
 
 # Internete baglanmak icin ayar
 `sudo netplan generate`
+
 sonra
+
 `sudo netplan apply`
 
 # Docker kurulumu
