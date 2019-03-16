@@ -49,5 +49,5 @@ prod:
     
     - docker build --pull -t $CONTAINER_IMAGE:latest .
     - docker push $CONTAINER_IMAGE:latest
-only:
+  only:
     - master
