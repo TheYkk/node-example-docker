@@ -1,7 +1,6 @@
 #!/bin/bash
 
-THEURL='http://IP YAZILACAK:8080/'
-
+THEURL='http://0.0.0.0:32769/'
 
 # curl it
 while true
