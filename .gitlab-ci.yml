@@ -1,0 +1,10 @@
+image: node:6-alpine
+
+stages:
+  - production
+  
+production:
+  type: deploy
+  stage: production
+  only:
+    - master
