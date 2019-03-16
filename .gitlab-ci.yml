@@ -16,7 +16,6 @@ unit_test:
     - yarn
   script:
     - yarn test
-    - yarn run prettier --list-different
 
 build:
   image: docker:latest
