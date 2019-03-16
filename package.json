@@ -1,0 +1,24 @@
+{
+  "name": "node-example-docker",
+  "version": "1.0.0",
+  "description": "Example http app with nodejs with docker",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheYkk/Docker-portainer.git"
+  },
+  "author": "TheYkk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TheYkk/Docker-portainer/issues"
+  },
+  "homepage": "https://github.com/TheYkk/Docker-portainer#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2",
+    "request": "^2.88.0"
+  }
+}
