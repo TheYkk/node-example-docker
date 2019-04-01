@@ -3,7 +3,7 @@ cache:
   - node_modules/
 
 stages:
-  #- test
+  - test
   - build
   - prod
 
