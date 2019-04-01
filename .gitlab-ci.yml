@@ -20,7 +20,8 @@ unit_test:
   only:
     - dev
     - master
-
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 build:
   image: docker:latest
   stage: build
@@ -28,17 +29,14 @@ build:
     - docker:dind
   variables:
     DOCKER_DRIVER: overlay
-    CI_REGISTRY: registry.gitlab.com
-    CONTAINER_IMAGE: registry.gitlab.com/theykk/$CI_PROJECT_NAME #Workaround https://gitlab.com/gitlab-org/gitlab-ce/issues/23339
-
+    CONTAINER_IMAGE:  theykk/$CI_PROJECT_NAME 
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    
-    - docker build --pull -t $CONTAINER_IMAGE:$CI_COMMIT_SHA .
+    - docker build  -t $CONTAINER_IMAGE:$CI_COMMIT_SHA .
     - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
   only:
     - dev
     - master
+
 prod:
   image: docker:latest
   stage: prod
@@ -46,11 +44,9 @@ prod:
     - docker:dind
   variables:
     DOCKER_DRIVER: overlay
-    CI_REGISTRY: registry.gitlab.com
-    CONTAINER_IMAGE: registry.gitlab.com/theykk/$CI_PROJECT_NAME #Workaround https://gitlab.com/gitlab-org/gitlab-ce/issues/23339
+    CONTAINER_IMAGE: theykk/$CI_PROJECT_NAME #Workaround https://gitlab.com/gitlab-org/gitlab-ce/issues/23339
 
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     
     - docker build --pull -t $CONTAINER_IMAGE:latest .
     - docker push $CONTAINER_IMAGE:latest
