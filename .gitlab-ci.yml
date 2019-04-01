@@ -19,6 +19,7 @@ unit_test:
     - yarn test
   only:
     - dev
+    - tag
     - master
 before_script:
   - echo "${CI_REGISTRY_PASSWORD}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin "${CI_REGISTRY}"
@@ -39,6 +40,7 @@ build:
     
   only:
     - dev
+    - tag
     - master
 
 prod:
