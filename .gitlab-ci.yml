@@ -9,6 +9,7 @@ stages:
   - test
   - build
   - prod
+  - stable
 
 before_script:
   - echo "${CI_REGISTRY_PASSWORD}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin "${CI_REGISTRY}"
@@ -56,7 +57,7 @@ prod:
     - master
 
 stable:
-  stage: deploy
+  stage: stable
   script:
     - docker build --pull -t $CONTAINER_TAGGED_IMAGE .
     - docker push $CONTAINER_TAGGED_IMAGE
