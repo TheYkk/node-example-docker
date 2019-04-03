@@ -37,7 +37,9 @@ unit_test:
     - yarn
   script:
     - yarn test
-
+  except:
+      variables:
+        - $CI_COMMIT_MESSAGE =~ /\[skip test\].*/
 build:
   stage: build
   script:
