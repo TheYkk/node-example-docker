@@ -40,6 +40,7 @@ build:
   stage: build
   script:
     - echo  $CONTAINER_GENERAL_IMAGE
+    - echo $CI_REGISTRY_IMAGE
     - echo $CONTAINER_IMAGE_NAME
     - echo ${CONTAINER_GENERAL_IMAGE}
     - docker build --pull -t $CONTAINER_GENERAL_IMAGE .
