@@ -1,11 +1,26 @@
 cache:
   paths:
-  - node_modules/
+    - node_modules/
+image: docker:latest
 
 stages:
   - test
   - build
   - prod
+  - stable
+
+before_script:
+  - echo "${CI_REGISTRY_PASSWORD}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin "${CI_REGISTRY}"
+  - export CONTAINER_IMAGE_NAME="theykk/${CI_PROJECT_NAME}"
+  - export CONTAINER_GENERAL_IMAGE="${CONTAINER_IMAGE_NAME}:${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHA}"
+  - export CONTAINER_TAGGED_IMAGE="${CONTAINER_IMAGE_NAME}:${CI_COMMIT_REF_NAME}"
+  - export CONTAINER_LATEST_IMAGE="${CONTAINER_IMAGE_NAME}:latest"
+ 
+variables:
+  DOCKER_DRIVER: overlay
+
+services:
+    - docker:dind
 
 unit_test:
   image: node:6-alpine
@@ -17,42 +32,37 @@ unit_test:
     - yarn
   script:
     - yarn test
-  only:
-    - dev
-    - master
-
+  except:
+      changes:
+        - Dockerfile
+        - .gitlab-ci.yml
 build:
-  image: docker:latest
   stage: build
-  services:
-    - docker:dind
-  variables:
-    DOCKER_DRIVER: overlay
-    CI_REGISTRY: registry.gitlab.com
-    CONTAINER_IMAGE: registry.gitlab.com/theykk/$CI_PROJECT_NAME #Workaround https://gitlab.com/gitlab-org/gitlab-ce/issues/23339
-
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    
-    - docker build --pull -t $CONTAINER_IMAGE:$CI_COMMIT_SHA .
-    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
+    - echo  $CONTAINER_GENERAL_IMAGE
+    - echo $CI_REGISTRY_IMAGE
+    - echo $CI_PROJECT_NAME
+    - echo $CONTAINER_IMAGE_NAME
+    - echo ${CONTAINER_GENERAL_IMAGE}
+    - docker build --pull -t $CONTAINER_GENERAL_IMAGE .
+    - docker push $CONTAINER_GENERAL_IMAGE
   only:
-    - dev
+    - branches
+  except:
     - master
+
 prod:
-  image: docker:latest
   stage: prod
-  services:
-    - docker:dind
-  variables:
-    DOCKER_DRIVER: overlay
-    CI_REGISTRY: registry.gitlab.com
-    CONTAINER_IMAGE: registry.gitlab.com/theykk/$CI_PROJECT_NAME #Workaround https://gitlab.com/gitlab-org/gitlab-ce/issues/23339
-
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    
-    - docker build --pull -t $CONTAINER_IMAGE:latest .
-    - docker push $CONTAINER_IMAGE:latest
+    - docker build --pull -t $CONTAINER_LATEST_IMAGE .
+    - docker push $CONTAINER_LATEST_IMAGE
   only:
     - master
+
+stable:
+  stage: stable
+  script:
+    - docker build --pull -t $CONTAINER_TAGGED_IMAGE .
+    - docker push $CONTAINER_TAGGED_IMAGE
+  only:
+    - tags
